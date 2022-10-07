@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\TunggakanController;
 use App\Models\Tunggakan;
 use Illuminate\Http\Client\Request as ClientRequest;
@@ -18,9 +19,13 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/', function () {
-    return Inertia::render('Home');
-});
+Route::resource('/', HomeController::class);
+Route::get('/jtnow', [HomeController::class, 'jtnow']);
+Route::get('/nosppl', [HomeController::class, 'nosppl']);
+Route::get('/np2nosp2', [HomeController::class, 'np2nosp2']);
+Route::get('/sp2outstanding', [HomeController::class, 'sp2outstanding']);
+
+
 
 Route::resource('tunggakan', TunggakanController::class);
 

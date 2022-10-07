@@ -5,7 +5,7 @@
     <div class="px-5 py-3 shadow-lg bg-white rounded-lg">
       <div class="flex justify-between items-center py-2">
         <div class="font-bold text-lg my-2 text-gray-800">
-          Tunggakan Pemeriksaan Belum Selesai
+          {{props.judul}}
         </div>
 
         <label for="table-search" class="sr-only">Search</label>
@@ -45,11 +45,20 @@
               <th scope="col" class="py-3 px-2">
                 Nomor SP2
               </th>
+              <th scope="col" class="py-3 px-2">
+                Tgl SP2
+              </th>
+              <th scope="col" class="py-3 px-2">
+                Tgl SPPL
+              </th>
+              <th scope="col" class="py-3 px-2">
+                JT
+              </th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="tunggakan in tunggakans.data" :key="tunggakan.id"
-              class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+              class="bg-white text-xs border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
               <td class="py-2 px-2">
                 {{tunggakan.np2}}
               </td>
@@ -68,6 +77,16 @@
               <td class="py-2 px-2">
                 {{tunggakan.sp2}}
               </td>
+              <td class="py-2 px-2">
+                {{ moment(tunggakan.tgl_sp2).format("DD-MM-YYYY") }}
+              </td>
+              <td class="py-2 px-2">
+                {{ tunggakan.tgl_sppl = "0000-00-00" ? "SPPL Belum Diinput" :
+                moment(tunggakan.tgl_sppl).format("DD-MM-YYYY") }}
+              </td>
+              <td class="py-2 px-2">
+                {{ moment(tunggakan.jt_daluarsa).format("DD-MM-YYYY") }}
+              </td>
             </tr>
           </tbody>
         </table>
@@ -84,15 +103,18 @@
 import { ref, watch } from 'vue';
 import Pagination from '../Shared/Pagination';
 import { Inertia } from '@inertiajs/inertia';
+import moment from "moment";
 
 let props = defineProps({
   tunggakans: Object,
-  filters: Object
+  filters: Object,
+  moment: moment,
+  judul: Object
 })
 let search = ref(props.filters.search);
 
 watch(search, value => {
-  Inertia.get('/tunggakan', { search: value }, {
+  Inertia.get(window.location.pathname, { search: value }, {
     preserveState: true
   });
 });

@@ -10,7 +10,7 @@ class TunggakanController extends Controller
 {
     /**
      * Display a listing of the resource.
-     *
+     * 
      * @return \Illuminate\Http\Response
      */
     public function index()
@@ -18,13 +18,15 @@ class TunggakanController extends Controller
         return Inertia::render('Tunggakan', [
             'tunggakans' => Tunggakan::query()
                 ->when(Request::input('search'), function ($query, $search) {
-                    $query->where('nama_wp', 'like', "%{$search}%");
+                    $query->where('nama_wp', 'like', strtoupper("%{$search}%"));
                 })
                 ->where('sp2', '!=', '')
+                ->orderBy('jt_daluarsa', 'asc')
                 ->paginate(10)
                 ->withQueryString(),
 
-            'filters' => Request::only(['search'])
+            'filters' => Request::only(['search']),
+            'judul' => 'Daftar Tunggakan Pemeriksaan'
         ]);
     }
 
@@ -57,7 +59,18 @@ class TunggakanController extends Controller
      */
     public function show($id)
     {
-        //
+        return Inertia::render('Tunggakan', [
+            'tunggakans' => Tunggakan::query()
+                ->when(Request::input('search'), function ($query, $search) {
+                    $query->where('nama_wp', 'like', "%{$search}%");
+                })
+                ->where('kode_rik', '=', $id)
+                ->where('sp2', '!=', '')
+                ->paginate(10)
+                ->withQueryString(),
+
+            'filters' => Request::only(['search'])
+        ]);
     }
 
     /**
