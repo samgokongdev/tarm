@@ -18,6 +18,7 @@ class HomeController extends Controller
     {
         return Inertia::render('Home', [
             'sp2bulanini' => DB::table('tunggakans')
+                ->where('fg_jt','=','OK')
                 ->whereMonth('jt_daluarsa', date('m'))
                 ->whereYear('jt_daluarsa', date('Y'))
                 ->count(),
@@ -29,6 +30,22 @@ class HomeController extends Controller
                 ->where('sp2', '=', "")
                 ->count(),
             'sp2outstanding' => DB::table('tunggakans')
+                ->where('fg_jt','=','OK')
+                ->where('sp2', '!=', "")
+                ->count(),
+            'sp2permdok' => DB::table('tunggakans')
+                ->whereMonth('max_perm_dok', date('m'))
+                ->whereYear('max_perm_dok', date('Y'))
+                ->where('sp2', '!=', "")
+                ->count(),
+            'sp2sphp' => DB::table('tunggakans')
+                ->whereMonth('max_sphp', date('m'))
+                ->whereYear('max_sphp', date('Y'))
+                ->where('sp2', '!=', "")
+                ->count(),
+            'sp2lhp' => DB::table('tunggakans')
+                ->whereMonth('max_lhp', date('m'))
+                ->whereYear('max_lhp', date('Y'))
                 ->where('sp2', '!=', "")
                 ->count(),
 
@@ -114,13 +131,14 @@ class HomeController extends Controller
                     $query->where('nama_wp', 'like', strtoupper("%{$search}%"));
                 })
                 ->where('sp2', '!=', '')
+                ->where('fg_jt','=','OK')
                 ->whereMonth('jt_daluarsa', date('m'))
                 ->orderBy('jt_daluarsa', 'asc')
                 ->paginate(10)
                 ->withQueryString(),
 
             'filters' => Request::only(['search']),
-            'judul' => 'Daftar Tunggakan JT Bulan Ini'
+            'judul' => 'Daftar Tunggakan JT Bulan Ini Brow'
         ]);
     }
 
@@ -183,12 +201,74 @@ class HomeController extends Controller
                     $query->where('nama_wp', 'like', strtoupper("%{$search}%"));
                 })
                 ->where('sp2', '!=', '')
+                ->where('fg_jt','=','OK')
                 // ->where('tgl_sppl', '=', '0000-00-00')
                 ->orderBy('jt_daluarsa', 'asc')
                 ->paginate(10)
                 ->withQueryString(),
 
-            'filters' => Request::only(['search'])
+            'filters' => Request::only(['search']),
+            'judul' => 'Daftar Pemeriksaan Berjalan (Exclude Kompensasi)'
+        ]);
+    }
+
+    public function sp2permdok()
+    {
+        return Inertia::render('Tunggakan', [
+            'tunggakans' => Tunggakan::query()
+                ->when(Request::input('search'), function ($query, $search) {
+                    $query->where('nama_wp', 'like', strtoupper("%{$search}%"));
+                })
+                ->where('sp2', '!=', '')
+                ->whereMonth('max_perm_dok', date('m'))
+                ->whereYear('max_perm_dok', date('Y'))
+                // ->where('tgl_sppl', '=', '0000-00-00')
+                ->orderBy('jt_daluarsa', 'asc')
+                ->paginate(10)
+                ->withQueryString(),
+
+            'filters' => Request::only(['search']),
+            'judul' => 'Daftar SP2 Yang Seharusnya Permintaan Dokumennya Telah Selesai'
+        ]);
+    }
+
+    public function sp2sphp()
+    {
+        return Inertia::render('Tunggakan', [
+            'tunggakans' => Tunggakan::query()
+                ->when(Request::input('search'), function ($query, $search) {
+                    $query->where('nama_wp', 'like', strtoupper("%{$search}%"));
+                })
+                ->where('sp2', '!=', '')
+                ->whereMonth('max_sphp', date('m'))
+                ->whereYear('max_sphp', date('Y'))
+                // ->where('tgl_sppl', '=', '0000-00-00')
+                ->orderBy('jt_daluarsa', 'asc')
+                ->paginate(10)
+                ->withQueryString(),
+
+            'filters' => Request::only(['search']),
+            'judul' => 'Daftar SP2 Yang Seharusnya Telah Selesai Pengujian / SPHP'
+        ]);
+    }
+
+    public function sp2lhp()
+    {
+        return Inertia::render('Tunggakan', [
+            'tunggakans' => Tunggakan::query()
+                ->when(Request::input('search'), function ($query, $search) {
+                    $query->where('nama_wp', 'like', strtoupper("%{$search}%"));
+                })
+                ->where('sp2', '!=', '')
+                ->whereMonth('max_lhp', date('m'))
+                ->whereYear('max_lhp', date('Y'))
+                // ->where('tgl_sppl', '=', '0000-00-00')
+                ->orderBy('jt_daluarsa', 'asc')
+                ->paginate(10)
+                ->withQueryString(),
+
+            'filters' => Request::only(['search']),
+            'judul' => 'Daftar SP2 Yang Seharusnya Telah Terbit LHP'
         ]);
     }
 }

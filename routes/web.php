@@ -24,20 +24,16 @@ Route::get('/jtnow', [HomeController::class, 'jtnow']);
 Route::get('/nosppl', [HomeController::class, 'nosppl']);
 Route::get('/np2nosp2', [HomeController::class, 'np2nosp2']);
 Route::get('/sp2outstanding', [HomeController::class, 'sp2outstanding']);
-
+Route::get('/sp2permdok', [HomeController::class, 'sp2permdok']);
+Route::get('/sp2sphp', [HomeController::class, 'sp2sphp']);
+Route::get('/sp2lhp', [HomeController::class, 'sp2lhp']);
 
 
 Route::resource('tunggakan', TunggakanController::class);
 
-// Route::get('/tunggakan', function () {
-//     return Inertia::render('Tunggakan', [
-//         'tunggakans' => Tunggakan::query()
-//             ->when(ClientRequest::input('search'), function ($query, $search) {
-//                 $query->where('nama_wp', 'like', "%{$search}%");
-//             })
-//             ->paginate(10),
-//     ]);
-// });
+Route::get('/spt', function () {
+    return Inertia::render('Spt');
+});
 
 Route::get('/lhp', function () {
     return Inertia::render('Lhp');
